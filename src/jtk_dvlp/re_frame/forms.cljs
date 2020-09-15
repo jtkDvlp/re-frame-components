@@ -1,4 +1,7 @@
 (ns jtk-dvlp.re-frame.forms
+  (:refer-clojure
+   :exclude [dispatch-fn])
+
   (:require
    [re-frame.core :as rf]))
 
@@ -6,13 +9,13 @@
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Dispatch-Helpers
 
-(defn dispatch
+(defn dispatch-fn
   [event-vec]
   (fn [e]
     (js-invoke e "preventDefault")
     (rf/dispatch event-vec)))
 
-(defn dispatch-value
+(defn dispatch-value-fn
   [event-vec]
   (fn [js-event]
     (->> js-event
@@ -20,6 +23,18 @@
          (.-value)
          (conj event-vec)
          (rf/dispatch-sync))))
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Events
+
+(rf/reg-event-db :forms/reset-value
+  (fn [db [_ db-path value]]
+    (assoc-in db db-path value)))
+
+(rf/reg-event-db :forms/clear-value
+  (fn [db [_ db-path]]
+    (assoc-in db db-path nil)))
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
