@@ -17,3 +17,14 @@
         (concat args)
         (vec)
         (rf/dispatch))))
+
+(defn debounce
+  [f ms]
+  (let [timer
+        (atom nil)]
+
+    (fn [& args]
+      (when @timer
+        (.clearTimeout js/window @timer))
+      (reset! timer (.setTimeout js/window #(apply f args) ms))
+      nil)))
