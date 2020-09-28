@@ -3,6 +3,9 @@
    [re-frame.core :as rf]))
 
 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+
 (defn dispatch
   [event-vec & args]
   (-> event-vec
@@ -28,3 +31,12 @@
         (.clearTimeout js/window @timer))
       (reset! timer (.setTimeout js/window #(apply f args) ms))
       nil)))
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Coeffects
+
+(rf/reg-cofx
+ :utils/uuid
+ (fn [coeffects _]
+   (assoc coeffects :utils/uuid (random-uuid))))
